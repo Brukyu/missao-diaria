@@ -1,15 +1,15 @@
-// HomeScreen.js
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, FlatList, Text, Image } from 'react-native';
 import AddNewTodo from '../components/AddNewTodo';
 import TaskItem from '../components/TaskItem';
 import LifeBar from '../components/LifeBar';
 import * as Progress from 'react-native-progress';
 import styles from '../styles/HomeScreenStyles';
+import { TaskContext } from '../components/TaskCompleted';
 
 export default function HomeScreen() {
-  const [tasks, setTasks] = useState([]);
-  const [completedTasks, setCompletedTasks] = useState(0); 
+  const { completedTasks, setCompletedTasks } = useContext(TaskContext);
+  const [tasks, setTasks] = useState([]); 
   const [username, setUsername] = useState('Username'); 
   const [life, setLife] = useState(100); 
   const [level, setLevel] = useState(0); 
@@ -20,6 +20,7 @@ export default function HomeScreen() {
   };
 
   const handleCompleteTask = index => {
+    setCompletedTasks(oldTasks => [...oldTasks, tasks[index]]);
     setTasks(oldTasks => oldTasks.filter((task, i) => i !== index));
     setLevel(oldLevel => {
       const newLevel = oldLevel + 10;
@@ -45,9 +46,9 @@ export default function HomeScreen() {
         <Text style={{ color: 'darkred', fontSize: 16, fontWeight:'bold'}}>❤️ Health</Text>
           <LifeBar life={life} />
           <Text style={{ color: 'darkred', fontSize: 16, fontWeight:'bold'}}>{life}/100</Text>
-          <Text style={{ color: 'darkgreen', fontSize: 16, fontWeight:'bold'}}>🟢 Mission Completed</Text>
+          <Text style={{ color: 'darkgreen', fontSize: 16, fontWeight:'bold'}}>🟢 Tasks Completed</Text>
           <Progress.Bar progress={level / 100} width={270} height={15} color='darkgreen'/>
-          <Text style={{color: 'darkgreen', fontSize: 16, fontWeight: 'bold'}}>Concluidas: {level/10} / Lvl. {levelCount}</Text>
+          <Text style={{color: 'darkgreen', fontSize: 16, fontWeight: 'bold'}}>Finished: {level/10} Tasks</Text>
         </View>
       </View>
       <AddNewTodo addTask={handleAddTask} />
